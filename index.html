@@ -381,10 +381,10 @@
       pointer-events: none;
     }
 
-    /* CIRCULAR SPOTLIGHT FRAME */
+    /* CIRCULAR SPOTLIGHT FRAME: Positioned directly in spotlight-view-container */
     .spotlight-circle-frame {
       position: absolute;
-      top: var(--cy, 36%);
+      top: var(--cy, 33%);
       left: var(--cx, 55.5%);
       transform: translate(-50%, -50%);
       width: 132px;
@@ -392,7 +392,7 @@
       border-radius: 50%;
       border: 2px solid #ffffff;
       overflow: hidden;
-      z-index: 320;
+      z-index: 330;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
       background-color: #ffffff;
     }
@@ -414,11 +414,11 @@
       transform: translate(-50%, -100%);
       width: 20px;
       height: auto;
-      z-index: 325;
+      z-index: 335;
       filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.4));
     }
 
-    /* DIALOG CARD: Straight 90-degree corners (border-radius: 0) */
+    /* DIALOG CARD */
     .dialog-card {
       background: #ffffff;
       border-radius: 0;
@@ -519,12 +519,6 @@
     
     .spotlight-view-container.layout-left .spotlight-wedge { 
       display: block; 
-    }
-
-    .spotlight-view-container.layout-left .spotlight-circle-frame {
-      left: var(--cx, 56%);
-      top: var(--cy, 36%);
-      transition: none !important;
     }
 
     .spotlight-view-container.layout-left.zoom-map .spotlight-circle-frame img.spotlight-map-bg {
@@ -735,9 +729,15 @@
     <!-- SPOTLIGHT OVERLAY MODAL -->
     <div class="dark-overlay" id="content-modal">
       <div class="spotlight-view-container" id="spotlight-container">
-        <div class="spotlight-stack" id="spotlight-stack">
+        
+        <!-- CIRCULAR SPOTLIGHT FRAME: Elevated out of stack to share same coordinate origin as the map -->
+        <div class="spotlight-circle-frame" id="spotlight-circle">
+          <img src="Resources/PastedVector-29.svg" id="spotlight-map-bg" alt="Regional Map Spotlight" class="spotlight-map-bg">
+          <img src="Resources/PastedVector-25.svg" alt="Location Pin" class="spotlight-pin-icon">
+        </div>
 
-          <!-- TRIANGLE BEAM + CIRCLE -->
+        <div class="spotlight-stack" id="spotlight-stack">
+          <!-- TRIANGLE BEAM -->
           <div class="spotlight-beam" id="spotlight-beam">
             <div class="spotlight-triangle-clip">
               <img src="Resources/PastedVector-30.svg" alt="" class="spotlight-triangle-bg">
@@ -747,12 +747,6 @@
             <svg class="spotlight-wedge" id="spotlight-wedge" aria-hidden="true">
               <polygon id="spotlight-wedge-poly" fill="#141F52"></polygon>
             </svg>
-
-            <!-- CIRCULAR SPOTLIGHT FRAME -->
-            <div class="spotlight-circle-frame" id="spotlight-circle">
-              <img src="Resources/PastedVector-29.svg" id="spotlight-map-bg" alt="Regional Map Spotlight" class="spotlight-map-bg">
-              <img src="Resources/PastedVector-25.svg" alt="Location Pin" class="spotlight-pin-icon">
-            </div>
           </div>
 
           <!-- DIALOG CARD -->
@@ -883,8 +877,6 @@
       const cy = tipY - (0.531 - 0.5) * size;
       circle.style.setProperty('--cx', cx + 'px');
       circle.style.setProperty('--cy', cy + 'px');
-      circle.style.left = 'var(--cx)';
-      circle.style.top = 'var(--cy)';
 
       // Georgia: hang the card from the circle
       if (spotlightContainer.classList.contains('anchor-card')) {
@@ -929,6 +921,7 @@
         return;
       }
 
+      const app = document.getElementById('interactive-app');
       const stage = document.querySelector('.stage-view');
       const stack = document.getElementById('spotlight-stack');
       const circle = document.getElementById('spotlight-circle');
@@ -939,19 +932,17 @@
       card.style.bottom = '';
       stack.style.transform = '';
 
-      // Direct absolute alignment over the map pin
+      // Direct coordinates relative to the interactive container
       const gap = pin.offsetHeight - pinImg.offsetHeight;
       const tipX = stage.offsetLeft + pin.offsetLeft;
       const tipY = stage.offsetTop + pin.offsetTop - gap;
 
-      const size = circle.clientWidth;
+      const size = circle.offsetWidth || 132;
       const cx = tipX - (0.508 - 0.5) * size;
       const cy = tipY - (0.531 - 0.5) * size;
 
       circle.style.setProperty('--cx', cx + 'px');
       circle.style.setProperty('--cy', cy + 'px');
-      circle.style.left = 'var(--cx)';
-      circle.style.top = 'var(--cy)';
     }
 
     window.addEventListener('resize', () => {
