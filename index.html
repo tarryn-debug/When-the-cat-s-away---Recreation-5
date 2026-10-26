@@ -381,10 +381,10 @@
       pointer-events: none;
     }
 
-    /* CIRCULAR SPOTLIGHT FRAME */
+    /* CIRCULAR SPOTLIGHT FRAME (Shifted up to top: 14% to sit higher on map) */
     .spotlight-circle-frame {
       position: absolute;
-      top: 36%;
+      top: 14%;
       left: calc(55.5% + var(--dx, 0px));
       transform: translate(-50%, -50%);
       width: 132px;
@@ -949,16 +949,9 @@
       const c = circle.getBoundingClientRect();
       const cx = (c.left + c.width / 2 - appRect.left) / scale;
       const cy = (c.top + c.height / 2 - appRect.top) / scale;
-      const radius = c.height / 2 / scale;
 
       let dy = tipY - cy;
       let dx = tipX - cx;
-
-      const cardBottom = (card.getBoundingClientRect().bottom - appRect.top) / scale;
-      const maxDown = app.offsetHeight - 8 - cardBottom;
-      const maxUp = 4 - (cy - radius);
-      dy = Math.min(maxDown, Math.max(maxUp, dy));
-      dx = Math.max(-14, Math.min(14, dx));
 
       stack.style.transform = 'translateY(' + dy + 'px)';
       circle.style.setProperty('--dx', dx + 'px');
