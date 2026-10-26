@@ -381,11 +381,11 @@
       pointer-events: none;
     }
 
-    /* CIRCULAR SPOTLIGHT FRAME (Shifted up to top: 14% to sit higher on map) */
+    /* CIRCULAR SPOTLIGHT FRAME */
     .spotlight-circle-frame {
       position: absolute;
-      top: 14%;
-      left: calc(55.5% + var(--dx, 0px));
+      top: var(--cy, 36%);
+      left: var(--cx, 55.5%);
       transform: translate(-50%, -50%);
       width: 132px;
       height: 132px;
@@ -883,6 +883,8 @@
       const cy = tipY - (0.531 - 0.5) * size;
       circle.style.setProperty('--cx', cx + 'px');
       circle.style.setProperty('--cy', cy + 'px');
+      circle.style.left = 'var(--cx)';
+      circle.style.top = 'var(--cy)';
 
       // Georgia: hang the card from the circle
       if (spotlightContainer.classList.contains('anchor-card')) {
@@ -927,7 +929,6 @@
         return;
       }
 
-      const app = document.getElementById('interactive-app');
       const stage = document.querySelector('.stage-view');
       const stack = document.getElementById('spotlight-stack');
       const circle = document.getElementById('spotlight-circle');
@@ -937,24 +938,20 @@
       card.style.top = '';
       card.style.bottom = '';
       stack.style.transform = '';
-      circle.style.setProperty('--dx', '0px');
 
-      const appRect = app.getBoundingClientRect();
-      const scale = appRect.width / app.offsetWidth || 1;
-
+      // Direct absolute alignment over the map pin
       const gap = pin.offsetHeight - pinImg.offsetHeight;
       const tipX = stage.offsetLeft + pin.offsetLeft;
       const tipY = stage.offsetTop + pin.offsetTop - gap;
 
-      const c = circle.getBoundingClientRect();
-      const cx = (c.left + c.width / 2 - appRect.left) / scale;
-      const cy = (c.top + c.height / 2 - appRect.top) / scale;
+      const size = circle.clientWidth;
+      const cx = tipX - (0.508 - 0.5) * size;
+      const cy = tipY - (0.531 - 0.5) * size;
 
-      let dy = tipY - cy;
-      let dx = tipX - cx;
-
-      stack.style.transform = 'translateY(' + dy + 'px)';
-      circle.style.setProperty('--dx', dx + 'px');
+      circle.style.setProperty('--cx', cx + 'px');
+      circle.style.setProperty('--cy', cy + 'px');
+      circle.style.left = 'var(--cx)';
+      circle.style.top = 'var(--cy)';
     }
 
     window.addEventListener('resize', () => {
